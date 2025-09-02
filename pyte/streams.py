@@ -237,6 +237,7 @@ class Stream:
         listener = self.listener
         draw = listener.draw
         debug = listener.debug
+        unhandled_char = getattr(listener, 'unhandled_char', lambda c: None)
 
         ESC, CSI_C1 = ctrl.ESC, ctrl.CSI_C1
         OSC_C1 = ctrl.OSC_C1
@@ -379,6 +380,8 @@ class Stream:
                     listener.set_title(param)
             elif char not in NUL_OR_DEL:
                 draw(char)
+            else:
+                unhandled_char(char)
 
     def select_other_charset(self, code: str) -> None:
         """Select other (non G0 or G1) charset.
